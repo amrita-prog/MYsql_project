@@ -216,3 +216,56 @@ INSERT INTO Orders (OrderID, CustomerID, OrderDate) VALUES
 (40, 40, '2025-07-10');
 
 select * from Orders;
+
+create table OrderDetails(
+DetailID int(10) primary key,
+OrderID int(10),
+foreign key (OrderID) references orders(OrderID),
+ProductID int(10),
+foreign key (ProductID) references Products(ProductID),
+Quantity int(10) 
+);
+
+INSERT INTO OrderDetails (DetailID, OrderID, ProductID, Quantity) VALUES
+(1, 1, 5, 1),
+(2, 2, 10, 2),
+(3, 3, 15, 1),
+(4, 4, 7, 3),
+(5, 5, 3, 1),
+(6, 6, 18, 2),
+(7, 7, 12, 1),
+(8, 8, 22, 1),
+(9, 9, 28, 1),
+(10, 10, 2, 1),
+(11, 11, 8, 2),
+(12, 12, 16, 1),
+(13, 13, 20, 1),
+(14, 14, 14, 3),
+(15, 15, 26, 2),
+(16, 16, 6, 1),
+(17, 17, 11, 1),
+(18, 18, 4, 2),
+(19, 19, 9, 1),
+(20, 20, 1, 1),
+(21, 21, 30, 2),
+(22, 22, 21, 1),
+(23, 23, 19, 3),
+(24, 24, 17, 2),
+(25, 25, 24, 1),
+(26, 26, 23, 2),
+(27, 27, 13, 1),
+(28, 28, 25, 2),
+(29, 29, 27, 1),
+(30, 30, 29, 1),
+(31, 31, 6, 1),
+(32, 32, 16, 2),
+(33, 33, 3, 1),
+(34, 34, 15, 2),
+(35, 35, 22, 1),
+(36, 36, 9, 3),
+(37, 37, 7, 2),
+(38, 38, 4, 1),
+(39, 39, 2, 1),
+(40, 40, 1, 1);
+
+select * from OrderDetails;
