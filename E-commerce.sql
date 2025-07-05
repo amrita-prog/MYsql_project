@@ -315,7 +315,17 @@ INSERT INTO Orders (OrderID, CustomerID, OrderDate) VALUES
 (37, 37, '2025-07-07'),
 (38, 38, '2025-07-08'),
 (39, 39, '2025-07-09'),
-(40, 40, '2025-07-10');
+(40, 40, '2025-07-10'),
+(41, 1, '2025-07-11'),
+(42, 2, '2025-07-12'),
+(43, 3, '2025-07-13'),
+(44, 1, '2025-07-14'),
+(45, 2, '2025-07-15'),
+(46, 4, '2025-07-16'),
+(47, 5, '2025-07-17'),
+(48, 5, '2025-07-18'),
+(49, 6, '2025-07-19'),
+(50, 6, '2025-07-20');
 
 select * from Orders;
 
@@ -554,5 +564,87 @@ INSERT INTO Shipping (ShippingID, OrderID, ShipDate, DeliveryDate) VALUES
 
 select * from shipping;
 
--- 1.What is the total number of orders placed?
+
+
+
+-- What is the total number of orders placed?
+
+select count(*) as total_order from orders;
+
+-- Top 5 customers with the highest number of orders
+
+SELECT C.Name, COUNT(O.OrderID) AS OrderCount
+FROM Customers C
+JOIN Orders O ON C.CustomerID = O.CustomerID
+GROUP BY C.CustomerID
+ORDER BY OrderCount DESC
+LIMIT 5;
+
+-- How many orders has each customer placed?
+
+select 
+customers.Name, count(orders.orderID) as total_order
+from customers
+join orders on customers.customerID = orders.orderID
+group by customers.Name;
+
+-- Which customers have placed more than 1 order?
+
+select
+c.Name, count(o.orderID) from customers c
+join orders o on c.customerID = o.customerID 
+group by c.Name 
+having count(o.orderID) > 1;
+
+-- What is the latest order date for each customer?
+
+select 
+c.Name,max(o.orderDate) as lateset_date
+from customers c
+join orders o on c.customerID = o.customerID
+group by c.Name;
+
+-- Which customers placed orders in June 2025?
+
+select 
+c.Name
+from customers c
+join orders o on c.customerID = o.customerID
+where o.orderDate between '2025-06-01' AND '2025-06-30';
+
+-- Has customer 'Priya Patel' ever placed an order?
+
+select count(*) as priya_order
+from orders o
+where o.customerID = (
+select customerID from customers where Name = 'priya patel'
+);
+
+-- List all orders along with the customer name.
+
+select 
+c.Name,o.orderID,o.orderDate
+from orders o 
+join customers c on c.customerID = o.customerID;
+
+-- Which customer placed order with OrderID = 10?
+
+select 
+c.Name, o.orderDate
+from customers c
+join orders o on c.customerID = o.customerID
+where o.OrderID = 10;
+
+-- List names of customers who placed order IDs 1, 2, or 3.
+
+select 
+c.Name
+from customers c
+join orders o on c.customerID = o.customerID
+where o.OrderID  in (1,2,3);
+
+-- Total quantity of products ordered by each customer.
+
+select 
+
 
