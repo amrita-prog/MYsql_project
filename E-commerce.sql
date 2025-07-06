@@ -580,15 +580,16 @@ GROUP BY C.CustomerID
 ORDER BY OrderCount DESC
 LIMIT 5;
 
--- How many orders has each customer placed?
+-- 1.How many orders has each customer placed?
 
 select 
-customers.Name, count(orders.orderID) as total_order
-from customers
-join orders on customers.customerID = orders.orderID
-group by customers.Name;
+c.Name, count(o.orderID) as total_order
+from customers c
+join orders  o on c.customerID = o.orderID
+group by c.Name;
 
--- Which customers have placed more than 1 order?
+
+-- 2.Which customers have placed more than 1 order?
 
 select
 c.Name, count(o.orderID) from customers c
@@ -596,7 +597,7 @@ join orders o on c.customerID = o.customerID
 group by c.Name 
 having count(o.orderID) > 1;
 
--- What is the latest order date for each customer?
+-- 3.What is the latest order date for each customer?
 
 select 
 c.Name,max(o.orderDate) as lateset_date
@@ -604,30 +605,31 @@ from customers c
 join orders o on c.customerID = o.customerID
 group by c.Name;
 
--- Which customers placed orders in June 2025?
+-- 4.Which customers placed orders in June 2025?
 
 select 
-c.Name
+c.Name,o.OrderDate      
 from customers c
 join orders o on c.customerID = o.customerID
 where o.orderDate between '2025-06-01' AND '2025-06-30';
 
--- Has customer 'Priya Patel' ever placed an order?
+-- 5.Has customer 'Priya Patel' ever placed an order?
 
-select count(*) as priya_order
+select 
+count(*) as priya_order
 from orders o
 where o.customerID = (
 select customerID from customers where Name = 'priya patel'
 );
 
--- List all orders along with the customer name.
+-- 6.List all orders along with the customer name.
 
 select 
 c.Name,o.orderID,o.orderDate
 from orders o 
 join customers c on c.customerID = o.customerID;
 
--- Which customer placed order with OrderID = 10?
+-- 7.Which customer placed order with OrderID = 10?
 
 select 
 c.Name, o.orderDate
@@ -635,15 +637,15 @@ from customers c
 join orders o on c.customerID = o.customerID
 where o.OrderID = 10;
 
--- List names of customers who placed order IDs 1, 2, or 3.
+-- 8.List names of customers who placed order IDs 1, 2, or 3.
 
 select 
-c.Name
+c.Name,o.OrderID
 from customers c
 join orders o on c.customerID = o.customerID
 where o.OrderID  in (1,2,3);
 
--- Total quantity of products ordered by each customer.
+-- 9.Total quantity of products ordered by each customer.
 
 select 
 c.Name,sum(od.Quantity) as total_qt
@@ -652,7 +654,7 @@ join Orders o on c.customerID = o.customerID
 join orderDetails od on o.orderID = od.orderID
 group by c.Name;
 
--- How many different products were ordered in each order?
+-- 10.How many different products were ordered in each order?
 
 select
 o.orderID,count(distinct od.productID) as productCount
@@ -660,14 +662,14 @@ from orders o
 join orderDetails od on o.orderID = od.orderID
 group by o.orderID; 
 
--- List product name along with its category name.
+-- 11.List product name along with its category name.
 
 select
 p.Name,c.categoryName
 from products p
 join categories c on p.categoryID = c.categoryID;
 
--- How many products are there in each category?
+-- 12.How many products are there in each category?
 
 select 
 c.categoryName, count(p.productID)
@@ -675,14 +677,14 @@ from products p
 join categories c on p.categoryID = c.categoryID
 group by c.categoryName;
 
--- Which are the top 5 most expensive products?
+-- 13.Which are the top 5 most expensive products?
 
 select
 Name,Price 
 from products 
 order by price desc limit 5; 
 
--- List products with stock less than 50 and their category name.
+-- 14.List products with stock less than 50 and their category name.
 
 select
 p.Name,p.stockQuantity,c.categoryName
@@ -690,7 +692,7 @@ from products p
 join categories c on c.categoryID = p.productID
 where p.stockQuantity < 50;
 
--- Which product has the highest discount amount?
+-- 15.Which product has the highest discount amount?
 
 select
 p.Name , d.discountAmount
@@ -698,7 +700,7 @@ from products p
 join discounts d on d.productID = p.productID
 order by d.discountAmount desc limit 1;
 
--- Total discount amount provided per category.
+-- 16.Total discount amount provided per category.
 
 select
 c.categoryName,sum(d.discountAmount) as totalDiscount
@@ -707,7 +709,7 @@ join products p on p.categoryID = c.categoryID
 join discounts d on d.productID = p.productID
 group by c.categoryName;
 
--- List product names with their final price after discount.
+-- 17.List product names with their final price after discount.
 
 select
 p.Name, (p.price - d.discountAmount) as finalPrice
@@ -718,10 +720,69 @@ SELECT p.Name, p.Price - IFNULL(d.DiscountAmount, 0) AS FinalPrice
 FROM Products p
 LEFT JOIN Discounts d ON p.ProductID = d.ProductID;
 
--- Which products are priced above the average product price?
+-- 18.Which products are priced above the average product price?
 
+select
+Name,price as abovePrice
+from products where price > (select avg(price) from products);
 
+-- 19.List products that have a discount less than 500.
 
+select
+p.Name,d.discountAmount  as disamt
+from products p 
+join discounts d on d.productID = p.productID
+where d.discountAmount < 500;
 
+-- 20.List products that do not have any discount.
+
+select
+Name from products 
+where productID not in (select productID from discounts);
+
+-- 21. List all customers who have given a review with a rating of 5.
+
+select
+c.Name,r.rating
+from customers c
+join reviews r on r.customerID = c.customerID
+where r.rating = 5;
+
+-- 22.Find all products that have a discount of more than ₹2000 and are currently in stock.
+
+select
+p.Name,d.discountamount,p.StockQuantity  
+from products p 
+join discounts d on p.productID = d.productID
+where d.discountAmount > 2000 & p.StockQuantity  > 0;
+
+-- 23. Find the most expensive product in each category.
+
+select
+categoryID,Name,price
+from products p1
+where price = (select max(price) from products p2 where p1.categoryID = p2.categoryID);
+
+-- 24. Show the average rating for each product (only if it has been reviewed).
+
+select
+p.Name,avg(r.rating)
+from products p
+join reviews r on r.productId = p.productID
+group by p.Name;
+
+-- 25. Find names of all customers who ordered a product that costs more than ₹50,000.
+
+select 
+distinct c.Name
+from customers c 
+join orders o on c.customerID = o.customerID
+join orderDetails od on od.orderID = od.orderID
+join products p on p.productID = od.productID
+where p.price > 50000;
+
+-- 26. Show the number of orders placed for each product.
+
+select
 
 
