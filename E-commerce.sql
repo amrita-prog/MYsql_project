@@ -646,5 +646,56 @@ where o.OrderID  in (1,2,3);
 -- Total quantity of products ordered by each customer.
 
 select 
+c.Name,sum(od.Quantity) as total_qt
+from Customers c
+join Orders o on c.customerID = o.customerID
+join orderDetails od on o.orderID = od.orderID
+group by c.Name;
+
+-- How many different products were ordered in each order?
+
+select
+o.orderID,count(distinct od.productID) as productCount
+from orders o
+join orderDetails od on o.orderID = od.orderID
+group by o.orderID; 
+
+-- List product name along with its category name.
+
+select
+p.Name,c.categoryName
+from products p
+join categories c on p.categoryID = c.categoryID;
+
+-- How many products are there in each category?
+
+select 
+c.categoryName, count(p.productID)
+from products p
+join categories c on p.categoryID = c.categoryID
+group by c.categoryName;
+
+-- Which are the top 5 most expensive products?
+
+select
+Name,Price 
+from products 
+order by price desc limit 5; 
+
+-- List products with stock less than 50 and their category name.
+
+select
+p.Name,p.stockQuantity,c.categoryName
+from products p
+join categories c on c.categoryID = p.productID
+where p.stockQuantity < 50;
+
+-- Which product has the highest discount amount?
+
+select
+p.Name , d.discountAmount
+from products p
+join discounts d on d.productID = p.productID
+order by d.discountAmount desc limit 1;
 
 
