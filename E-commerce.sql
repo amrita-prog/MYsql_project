@@ -784,5 +784,46 @@ where p.price > 50000;
 -- 26. Show the number of orders placed for each product.
 
 select
+p.Name,count(od.orderID) as TotalOrders
+from products p 
+join orderDetails od on od.productID = p.productID
+group by p.Name; 
+
+-- 27. Find all orders that took more than 5 days to deliver.
+
+select
+o.orderID,s.shipDate,s.deliveryDate
+from orders o 
+join shipping s on s.orderID = o.orderID
+where datediff(s.deliveryDate,s.shipDate) >= 5;
+
+-- 28.Get the top 5 most ordered products (by quantity).
+
+select
+p.Name, sum(od.quantity) as totalQty
+from products p 
+join orderDetails od on od.productID = p.productID
+group  by  p.Name
+order by totalQty desc limit 5;
+
+-- 29.Show product names and prices that have never been ordered.
+
+select
+p.Name,p.price
+from products p 
+where p.productID not in (
+    select distinct productID from orderDetails);
+    
+-- 30. Find the total amount (price × quantity) each customer has spent.
+
+select 
+c.Name,sum(p.price * od.quantity) as totalAmt
+from customers c 
+join orders o on o.customerID = c.customerID
+join orderDetails od on od.orderID = o.orderID
+join products p on p.productID = od.productID
+group by c.Name;
+
+
 
 
