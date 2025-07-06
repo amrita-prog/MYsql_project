@@ -698,4 +698,30 @@ from products p
 join discounts d on d.productID = p.productID
 order by d.discountAmount desc limit 1;
 
+-- Total discount amount provided per category.
+
+select
+c.categoryName,sum(d.discountAmount) as totalDiscount
+from categories c 
+join products p on p.categoryID = c.categoryID
+join discounts d on d.productID = p.productID
+group by c.categoryName;
+
+-- List product names with their final price after discount.
+
+select
+p.Name, (p.price - d.discountAmount) as finalPrice
+from products p
+join discounts d on p.productID = d.productID; 
+
+SELECT p.Name, p.Price - IFNULL(d.DiscountAmount, 0) AS FinalPrice
+FROM Products p
+LEFT JOIN Discounts d ON p.ProductID = d.ProductID;
+
+-- Which products are priced above the average product price?
+
+
+
+
+
 
