@@ -577,21 +577,6 @@ INSERT INTO Shipping (ShippingID, OrderID, ShipDate, DeliveryDate) VALUES
 select * from shipping;
 
 
-
-
--- What is the total number of orders placed?
-
-select count(*) as total_order from orders;
-
--- Top 5 customers with the highest number of orders
-
-SELECT C.Name, COUNT(O.OrderID) AS OrderCount
-FROM Customers C
-JOIN Orders O ON C.CustomerID = O.CustomerID
-GROUP BY C.CustomerID
-ORDER BY OrderCount DESC
-LIMIT 5;
-
 -- 1.How many orders has each customer placed?
 
 select 
@@ -907,7 +892,94 @@ join products p on p.productID = od.productID
 group by o.orderID
 having countProduct >= 3;
 
+-- 39. Find forth highest product price.
 
+select * from products order by price desc limit 1 offset 3 ;
 
+-- 40. Find customers who haven’t placed any order.
 
+select
+c.Name from customers c
+where c.customerID not in (select customerID from orders);
 
+-- 41.Customers who ordered more than 2 products in a single order.
+
+select
+o.orderID,c.Name,count(od.productID) as productCount
+from orders o 
+join customers c on c.customerID = o.customerID
+join orderDetails od on od.orderID = o.orderID
+group by o.orderID,c.Name
+having productCount > 2;
+
+-- 42. Products that have never been ordered
+
+select
+p.productID,p.Name from products p
+where p.productID not in (select productID from orderDetails);
+
+-- 43. Show customers who used the most discounted product in their order
+
+select
+c.Name,p.Name as productName, d.discountAmount
+from orders o 
+join customers c on c.customerID = o.customerID
+join orderDetails od on o.orderID = od.orderID
+join products p on od.productID = p.productID
+join discounts d on d.productID = p.productID
+where d.discountAmount = (select max(discountAmount) from discounts);
+
+-- 44. Which products were ordered the most (by total quantity)?
+
+select 
+p.Name,sum(od.Quantity) as totalQty
+from products p 
+join orderDetails od on p.productID = od.productID
+group by p.Name
+order by totalQty desc limit 1;
+
+-- 45. Find which category has the highest average price of products.
+
+select
+c.CategoryName, avg(p.price) as avgPrice
+from products p
+join categories c on c.CategoryID = p.CategoryID
+group by c.CategoryName
+order by avgPrice desc limit 1;
+
+-- 46.What is the total number of orders placed?
+
+select count(*) as total_order from orders;
+
+-- 47.Top 5 customers with the highest number of orders
+
+SELECT C.Name, COUNT(O.OrderID) AS OrderCount
+FROM Customers C
+JOIN Orders O ON C.CustomerID = O.CustomerID
+GROUP BY C.CustomerID
+ORDER BY OrderCount DESC
+LIMIT 5;
+
+-- 48. Show orders that contain products from more than one category.
+
+SELECT od.OrderID
+FROM OrderDetails od
+JOIN Products p ON od.ProductID = p.ProductID
+GROUP BY od.OrderID
+HAVING COUNT(DISTINCT p.CategoryID) > 1;
+
+-- 49.Find total orders per day for the last 10 days in the dataset.
+
+select
+orderDate,count(orderID) as orderDate
+from orders
+group by orderDate
+order by orderDate desc limit 10;
+
+-- 50.Show all categories that have at least 1 product with price over ₹50,000
+
+select 
+distinct c.CategoryName
+from categories c 
+join products p on p.categoryID = c.categoryID
+where p.price > 50000;
