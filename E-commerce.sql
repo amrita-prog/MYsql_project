@@ -510,6 +510,12 @@ INSERT INTO Discounts (DiscountID, ProductID, DiscountAmount) VALUES
 (69, 69, 3000),
 (70, 70, 5000);
 
+-- Add 3 more reviews for product ID 1
+INSERT INTO Reviews (ReviewID, ProductID, CustomerID, Rating, Comment) VALUES
+(36, 1, 2, 4, 'Good but expensive.'),
+(37, 1, 3, 5, 'Awesome experience!'),
+(38, 1, 4, 5, 'Best phone ever!');
+
 select * from discounts;
 
 create table Shipping (
@@ -612,6 +618,7 @@ c.Name,o.OrderDate
 from customers c
 join orders o on c.customerID = o.customerID
 where o.orderDate between '2025-06-01' AND '2025-06-30';
+
 
 -- 5.Has customer 'Priya Patel' ever placed an order?
 
@@ -823,6 +830,62 @@ join orders o on o.customerID = c.customerID
 join orderDetails od on od.orderID = o.orderID
 join products p on p.productID = od.productID
 group by c.Name;
+
+-- 31. Which products have been reviewed by more than 3 customers?
+
+select
+p.Name,count(r.reviewID) as reviewed
+from products p 
+join reviews r on r.productID = p.productID
+group by p.Name
+having reviewed > 3;
+
+-- 32. Find all orders placed in the month of June 2025.
+
+SELECT * FROM Orders
+WHERE OrderDate LIKE '2025-06%';
+
+-- 33. List customers who have reviewed products they did not order.
+
+select 
+distinct c.Name
+from Customers c 
+join Reviews r on c.CustomerID = r.CustomerID
+where not exists (
+	select 1 from Orders o
+    join OrderDetails od on od.OrderID = o.OrderID
+    where o.CustomerID = r.CustomerID and od.ProductID = r.ProductID
+);
+
+-- 34. Find the category that has the most products listed.
+
+select
+c.CategoryName, count(p.productID) as totalProducts
+from Categories c 
+join products p on p.categoryID = c.categoryID
+group by c.CategoryName
+order by totalProducts desc limit 1;
+
+-- 35. Show top 5 customers who spent the most in total.
+
+select
+c.Name, sum(p.price * od.quantity) as totalSpent
+from customers c
+join orders o on o.customerID = c.customerID
+join orderDetails od on od.orderID = o.orderID
+join products p on p.productID = od.productID
+group by c.Name
+order by totalSpent desc limit 5;
+
+-- 36. Which products have a discount more than 25% of their price?
+
+select
+p.Name, p.price, d.discountAmount
+from products p 
+join discounts d on d.productID = p.productID
+where (p.price * 25 / 100) < d.discountAmount;
+
+-- 37. Display average shipping time (in days) for all orders.
 
 
 
