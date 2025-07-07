@@ -380,6 +380,12 @@ INSERT INTO OrderDetails (DetailID, OrderID, ProductID, Quantity) VALUES
 (39, 39, 2, 1),
 (40, 40, 1, 1);
 
+INSERT INTO OrderDetails (DetailID, OrderID, ProductID, Quantity) VALUES
+(41, 1, 10, 1),
+(42, 1, 20, 1),
+(43, 1, 30, 1);  
+
+
 select * from OrderDetails;
 
 create table reviews(
@@ -886,6 +892,21 @@ join discounts d on d.productID = p.productID
 where (p.price * 25 / 100) < d.discountAmount;
 
 -- 37. Display average shipping time (in days) for all orders.
+
+select
+avg(datediff(deliveryDate,shipDate)) as AvgShippingDate
+from shipping;
+
+-- 38. Show orders that include at least 3 different products.
+
+select
+o.orderID,count(distinct p.productID) as countProduct
+from orders o 
+join orderDetails od on od.orderID = o.orderID
+join products p on p.productID = od.productID
+group by o.orderID
+having countProduct >= 3;
+
 
 
 
