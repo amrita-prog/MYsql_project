@@ -1,3 +1,35 @@
+-- ================================================
+-- 📦 E-Commerce Database Analytical SQL Queries
+-- ================================================
+-- 🔧 Author: Amrita Mishra
+-- 📅 Date: July 2025
+-- 🗃️ Description:
+--   This file contains practical MySQL analytical queries 
+--   written for an e-commerce relational database system. 
+--   The queries involve JOINs, GROUP BY, subqueries, 
+--   aggregate functions, and conditional filtering.
+--
+-- 📊 Topics Covered:
+--   - Product and order analysis
+--   - Customer behavior insights
+--   - Discount effectiveness
+--   - Review trends
+--   - Category-level stats
+--
+-- ✅ Intended For:
+--   - Practice for SQL interviews
+--   - Academic project submission
+--   - GitHub portfolio showcase
+--
+-- ⚠️ Note:
+--   Data INSERT/UPDATE/DELETE operations are excluded
+--   as per analytics-only requirement.
+--
+-- 💡 Tip: Use MySQL 8.0+ for best compatibility.
+-- ================================================
+
+
+
 create database E_commerce;
 
 show databases;
